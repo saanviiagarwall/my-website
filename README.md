@@ -16,7 +16,7 @@ Scrolling marquee: the "WELCOME TO MY SYSTEM" text repeats several times inside 
 Info boxes: "About Me" and "Hobbies" are tables inside neon-bordered boxes. I used a table because the content is naturally label → value pairs, and td:first-child styles all the labels in one rule.
 Enter button: a normal link (<a>) styled like a button. On hover it flips from outlined to filled with a glow, using a transition so it fades smoothly. I saw those cool references on pinterest and the thing I created doesn't come close yet, I know but it's alright because I think it looks good in my opinion.
 
-2. pc.html (The Computer, the Heart of the Site, The Hardest Part)
+2. PC.html (The Computer, the Heart of the Site, The Hardest Part)
 
 This is the most interactive page. The idea: a monitor that starts "off" and boots up. I wanted to make it more futuristic but I couldn't make the gui and so I decided to go for something simpler that I could do.
 
