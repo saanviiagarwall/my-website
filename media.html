@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>spec // worlds watched</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg: #080812;
+    --bg2: #0d0b1c;
+
+    --purple: #9b7cff;
+    --purple-light: #cbb8ff;
+    --blue: #62cfff;
+    --pink: #ff78d5;
+
+    --white: #f2efff;
+    --muted: #9690b0;
+
+    --line: rgba(155, 124, 255, 0.25);
+
+    --display: "Rajdhani", sans-serif;
+    --mono: "Space Mono", monospace;
+}
+
+
+/* =========================================
+   BASE
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    color: var(--white);
+
+    font-family: var(--display);
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(132, 90, 255, 0.14),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 75%,
+            rgba(65, 170, 255, 0.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #06060e,
+            #0b0918 55%,
+            #070711
+        );
+
+    overflow-x: hidden;
+}
+
+
+/* CRT scanlines */
+
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: 999;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.018) 0px,
+            rgba(255,255,255,0.018) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+
+    mix-blend-mode: overlay;
+}
+
+
+/* subtle noise */
+
+body::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: 998;
+
+    opacity: 0.025;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,0.8) 1px,
+            transparent 1px
+        );
+
+    background-size: 5px 5px;
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+main {
+    width: min(1250px, 92%);
+    margin: auto;
+
+    padding: 70px 0 100px;
+}
+
+
+/* =========================================
+   PAGE TITLE
+========================================= */
+
+.page-title {
+    margin-bottom: 75px;
+}
+
+.system-label {
+    font-family: var(--mono);
+
+    font-size: 10px;
+    letter-spacing: 4px;
+
+    color: var(--blue);
+
+    opacity: 0.8;
+
+    margin-bottom: 15px;
+}
+
+.page-title h1 {
+    margin: 0;
+
+    font-size: clamp(55px, 9vw, 105px);
+
+    line-height: 0.85;
+
+    letter-spacing: -4px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #ffffff,
+            var(--purple-light),
+            var(--blue)
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: titleGlitch 7s infinite;
+}
+
+.page-title p {
+    max-width: 620px;
+
+    margin-top: 28px;
+
+    font-family: var(--mono);
+
+    font-size: 12px;
+
+    line-height: 1.8;
+
+    color: var(--muted);
+}
+
+.page-title::after {
+    content: "";
+
+    display: block;
+
+    width: 220px;
+    height: 2px;
+
+    margin-top: 30px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--purple),
+            var(--blue),
+            transparent
+        );
+
+    box-shadow:
+        0 0 15px rgba(155,124,255,0.7);
+}
+
+
+/* =========================================
+   SECTION
+========================================= */
+
+.section-tag {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 35px;
+
+    font-family: var(--mono);
+
+    font-size: 10px;
+
+    letter-spacing: 3px;
+
+    color: var(--blue);
+}
+
+.section-tag::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--line),
+            transparent
+        );
+}
+
+
+/* =========================================
+   SHOW LIST
+========================================= */
+
+.show-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 80px;
+}
+
+
+/* =========================================
+   SHOW CARD
+========================================= */
+
+.show {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 44% 56%;
+
+    min-height: 590px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            115deg,
+            rgba(19,16,42,0.96),
+            rgba(8,8,19,0.98)
+        );
+
+    border: 1px solid var(--line);
+
+    box-shadow:
+        0 0 40px rgba(90,65,180,0.07);
+
+    transition:
+        border-color 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.4s ease;
+}
+
+.show:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(180,155,255,0.55);
+
+    box-shadow:
+        0 0 55px rgba(100,70,200,0.12),
+        inset 0 0 35px rgba(155,124,255,0.025);
+}
+
+
+/* corner cut */
+
+.show::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 25px;
+    height: 25px;
+
+    background: var(--bg);
+
+    clip-path: polygon(
+        100% 0,
+        100% 100%,
+        0 0
+    );
+
+    z-index: 10;
+}
+
+
+/* =========================================
+   BILLBOARD
+========================================= */
+
+.billboard {
+    position: relative;
+
+    min-height: 590px;
+
+    overflow: hidden;
+
+    background: #090815;
+}
+
+
+/* image */
+
+.billboard img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    filter:
+        brightness(0.72)
+        saturate(0.85)
+        contrast(1.05);
+
+    transition:
+        transform 0.9s cubic-bezier(.2,.8,.2,1),
+        filter 0.6s ease;
+}
+
+.show:hover .billboard img {
+    transform: scale(1.06);
+
+    filter:
+        brightness(0.84)
+        saturate(1)
+        contrast(1.08);
+}
+
+
+/* image overlay */
+
+.billboard::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 45%,
+            rgba(7,6,17,0.95) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(5,5,12,0.8),
+            transparent 45%
+        );
+}
+
+
+/* neon billboard frame */
+
+.billboard::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 17px;
+
+    z-index: 5;
+
+    border: 1px solid
+        rgba(203,184,255,0.55);
+
+    box-shadow:
+        0 0 12px rgba(155,124,255,0.35),
+        inset 0 0 20px rgba(155,124,255,0.12);
+
+    pointer-events: none;
+}
+
+
+/* billboard text */
+
+.billboard-label {
+    position: absolute;
+
+    z-index: 7;
+
+    bottom: 28px;
+    left: 28px;
+
+    padding: 9px 13px;
+
+    color: white;
+
+    font-family: var(--mono);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    background:
+        rgba(8,7,18,0.75);
+
+    border-left:
+        3px solid var(--pink);
+
+    backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 0 18px rgba(255,120,213,0.18);
+}
+
+
+/* =========================================
+   SHOW INFORMATION
+========================================= */
+
+.show-info {
+    padding: 45px 45px 45px 35px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start;
+}
+
+
+/* badges */
+
+.show-meta {
+    display: flex;
+
+    gap: 9px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 20px;
+}
+
+.badge {
+    padding: 7px 10px;
+
+    border:
+        1px solid rgba(98,207,255,0.3);
+
+    background:
+        rgba(98,207,255,0.04);
+
+    color: var(--blue);
+
+    font-family: var(--mono);
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+}
+
+
+/* title */
+
+.show-info h2 {
+    margin: 0;
+
+    font-size:
+        clamp(42px, 5vw, 72px);
+
+    line-height: 0.86;
+
+    letter-spacing: -3px;
+
+    color: white;
+}
+
+.show-info h2::after {
+    content: "";
+
+    display: block;
+
+    width: 90px;
+    height: 3px;
+
+    margin-top: 16px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--pink),
+            var(--purple)
+        );
+
+    box-shadow:
+        0 0 12px var(--pink);
+}
+
+
+/* =========================================
+   FAVORITE CHARACTER
+========================================= */
+
+.favorite {
+    margin-top: 28px;
+
+    color: #c8c2db;
+
+    font-family: var(--mono);
+
+    font-size: 11px;
+
+    line-height: 1.85;
+}
+
+.favorite b {
+    color: var(--pink);
+}
+
+
+/* =========================================
+   THOUGHT BOX
+========================================= */
+
+.thought {
+    margin-top: 25px;
+
+    padding: 18px 20px;
+
+    border-left:
+        2px solid var(--pink);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,120,213,0.06),
+            transparent
+        );
+
+    color: #d0cadf;
+
+    font-family: var(--mono);
+
+    font-size: 11px;
+
+    line-height: 1.8;
+}
+
+.thought b {
+    color: var(--blue);
+}
+
+
+/* =========================================
+   RATINGS
+========================================= */
+
+.ratings {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+
+    margin-top: 30px;
+}
+
+.rating {
+    display: grid;
+
+    grid-template-columns:
+        125px 1fr 35px;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.rating-name {
+    color: var(--muted);
+
+    font-family: var(--mono);
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+}
+
+.bar {
+    position: relative;
+
+    height: 5px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255,255,255,0.055);
+}
+
+.bar-fill {
+    width: 0%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--purple),
+            var(--blue),
+            var(--pink)
+        );
+
+    box-shadow:
+        0 0 12px rgba(155,124,255,0.8);
+
+    transition:
+        width 1.5s cubic-bezier(.16,1,.3,1);
+}
+
+.rating-number {
+    text-align: right;
+
+    color: var(--blue);
+
+    font-family: var(--mono);
+
+    font-size: 9px;
+}
+
+
+/* =========================================
+   EXTRA INFORMATION
+========================================= */
+
+.show-extra {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.extra-box {
+    padding: 13px;
+
+    background:
+        rgba(255,255,255,0.025);
+
+    border:
+        1px solid rgba(255,255,255,0.05);
+}
+
+.extra-box span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-family: var(--mono);
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+}
+
+.extra-box strong {
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+    margin-top: 90px;
+
+    padding-top: 22px;
+
+    border-top:
+        1px solid var(--line);
+
+    color: #69627f;
+
+    font-family: var(--mono);
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes titleGlitch {
+
+    0%,
+    90%,
+    100% {
+        transform: translate(0);
+    }
+
+    91% {
+        transform: translate(-2px, 1px);
+    }
+
+    92% {
+        transform: translate(2px, -1px);
+    }
+
+    93% {
+        transform: translate(-1px, 2px);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 850px) {
+
+    main {
+        padding-top: 45px;
+    }
+
+    .show {
+        grid-template-columns: 1fr;
+    }
+
+    .billboard {
+        min-height: 420px;
+    }
+
+    .show-info {
+        padding: 30px 25px 35px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .page-title h1 {
+        letter-spacing: -2px;
+    }
+
+    .show-info h2 {
+        font-size: 48px;
+    }
+
+    .rating {
+        grid-template-columns:
+            95px 1fr 32px;
+    }
+
+    .show-extra {
+        grid-template-columns: 1fr;
+    }
+
+    .billboard {
+        min-height: 330px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<main>
+
+    <!-- =====================================
+         PAGE TITLE
+    ====================================== -->
+
+    <section class="page-title">
+
+        <div class="system-label">
+            // SPEC_ARCHIVE / MEDIA_DATABASE
+        </div>
+
+        <h1>
+            WORLDS<br>
+            I'VE<br>
+            WATCHED
+        </h1>
+
+        <p>
+            Stories I've gotten attached to, characters I've
+            remembered, worlds I've gotten lost in, and the
+            ones that stayed with me after the credits rolled.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================
+         SHOW ARCHIVE
+    ====================================== -->
+
+    <div class="section-tag">
+        01 // MEDIA_ARCHIVE
+    </div>
+
+
+    <div class="show-list">
+
+
+        <!-- =====================================
+             CYBERPUNK: EDGERUNNERS
+        ====================================== -->
+
+        <article class="show">
+
+            <div class="billboard">
+
+                <img
+                    src="https://i.pinimg.com/736x/ab/8c/2c/ab8c2c78bfd888cd1dd92e712d2478c1.jpg"
+                    alt="Cyberpunk Edgerunners"
+                >
+
+                <div class="billboard-label">
+                    ARCHIVE_001 // NIGHT CITY
+                </div>
+
+            </div>
+
+
+            <div class="show-info">
+
+                <div class="show-meta">
+                    <span class="badge">COMPLETED</span>
+                    <span class="badge">SEPTEMBER 2026</span>
+                </div>
+
+
+                <h2>
+                    Cyberpunk:<br>
+                    Edgerunners
+                </h2>
+
+
+                <div class="favorite">
+
+                    <b>FAVORITE CHARACTER //</b>
+                    Lucy
+
+                    <br><br>
+
+                    I loved how her dream reflected her in a way.
+                    At the start it being the moon for freedom,
+                    then David because she loved him. David failed
+                    to realize that dreams change.
+
+                </div>
+
+
+                <div class="thought">
+
+                    <b>PERSONAL LOG //</b>
+
+                    <br><br>
+
+                    I loved the whole aesthetic but it's exactly
+                    what we shouldn't achieve in our civilization
+                    tbh. I didn't like the inappropriate scene
+                    because it makes me uncomfortable, but yeah.
+
+                </div>
+
+
+                <div class="ratings">
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            STORY
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="92">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            92
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            CHARACTERS
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="96">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            96
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            LORE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="90">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            90
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            EMOTIONAL DAMAGE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="97">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            97
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="show-extra">
+
+                    <div class="extra-box">
+
+                        <span>
+                            FAVORITE SCENE
+                        </span>
+
+                        <strong>
+                            The moon. AAA MY HEART
+                        </strong>
+
+                    </div>
+
+
+                    <div class="extra-box">
+
+                        <span>
+                            REWATCH
+                        </span>
+
+                        <strong>
+                            I MIGHT
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================
+             NANA
+        ====================================== -->
+
+        <article class="show">
+
+            <div class="billboard">
+
+                <img
+                    src="https://i.pinimg.com/736x/ef/5f/34/ef5f34af5c99b38ab4e5ad9975217ac8.jpg"
+                    alt="NANA"
+                >
+
+                <div class="billboard-label">
+                    ARCHIVE_002 // TOKYO
+                </div>
+
+            </div>
+
+
+            <div class="show-info">
+
+                <div class="show-meta">
+                    <span class="badge">COMPLETED</span>
+                    <span class="badge">NOVEMBER 2024</span>
+                </div>
+
+
+                <h2>
+                    NANA
+                </h2>
+
+
+                <div class="favorite">
+
+                    <b>FAVORITE CHARACTER //</b>
+                    Yasu
+
+                    <br><br>
+
+                    He is definitely the most unproblematic
+                    among all of them.
+
+                </div>
+
+
+                <div class="thought">
+
+                    <b>PERSONAL LOG //</b>
+
+                    <br><br>
+
+                    Ai Yazawa is brilliant and I wish I could get
+                    to the end of this anime but it hits so close
+                    because that's how reality plays out and it's
+                    sad but true. I hope she completes it someday.
+
+                </div>
+
+
+                <div class="ratings">
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            STORY
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="99">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            99
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            CHARACTERS
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="100">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            100
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            LORE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="98">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            98
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            EMOTIONAL DAMAGE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="100">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            100
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="show-extra">
+
+                    <div class="extra-box">
+
+                        <span>
+                            FAVORITE SCENE
+                        </span>
+
+                        <strong>
+                            The whole series.
+                        </strong>
+
+                    </div>
+
+
+                    <div class="extra-box">
+
+                        <span>
+                            REWATCH
+                        </span>
+
+                        <strong>
+                            5+ TIMES
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================
+             PARADISE KISS
+        ====================================== -->
+
+        <article class="show">
+
+            <div class="billboard">
+
+                <img
+                    src="https://i.pinimg.com/1200x/f7/99/8b/f7998bd7fc99f6b36d1be2fc32bece9c.jpg"
+                    alt="Paradise Kiss"
+                >
+
+                <div class="billboard-label">
+                    ARCHIVE_003 // YOUTH
+                </div>
+
+            </div>
+
+
+            <div class="show-info">
+
+                <div class="show-meta">
+                    <span class="badge">COMPLETED</span>
+                    <span class="badge">JANUARY 2026</span>
+                </div>
+
+
+                <h2>
+                    Paradise<br>
+                    Kiss
+                </h2>
+
+
+                <div class="favorite">
+
+                    <b>FAVORITE CHARACTER //</b>
+                    Yukari
+
+                    <br><br>
+
+                    I kind of see myself in her, especially the
+                    part where she doesn't have a dream of her own
+                    but then she finds it. I think I went through
+                    that too. Also the moment she learns to choose
+                    herself.
+
+                </div>
+
+
+                <div class="thought">
+
+                    <b>PERSONAL LOG //</b>
+
+                    <br><br>
+
+                    Paradise was sad but comparing it to NANA it
+                    had no effect on me whatsoever. It's just a
+                    lesser tragic version, but at the end all's well.
+                    They learn to live their life. Perhaps there's
+                    regret, but I think it's still written quite nicely.
+
+                </div>
+
+
+                <div class="ratings">
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            STORY
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="92">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            92
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            CHARACTERS
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="89">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            89
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            LORE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="94">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            94
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            EMOTIONAL DAMAGE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="87">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            87
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="show-extra">
+
+                    <div class="extra-box">
+
+                        <span>
+                            FAVORITE MOMENT
+                        </span>
+
+                        <strong>
+                            Yukari choosing herself.
+                        </strong>
+
+                    </div>
+
+
+                    <div class="extra-box">
+
+                        <span>
+                            REWATCH
+                        </span>
+
+                        <strong>
+                            3 TIMES
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================
+             ARCANE
+        ====================================== -->
+
+        <article class="show">
+
+            <div class="billboard">
+
+                <img
+                    src="https://i.pinimg.com/1200x/cd/05/85/cd0585aaa49d474e078fde939348b594.jpg"
+                    alt="Arcane"
+                >
+
+                <div class="billboard-label">
+                    ARCHIVE_004 // PILTOVER
+                </div>
+
+            </div>
+
+
+            <div class="show-info">
+
+                <div class="show-meta">
+                    <span class="badge">COMPLETED</span>
+                    <span class="badge">MARCH 2025</span>
+                </div>
+
+
+                <h2>
+                    Arcane
+                </h2>
+
+
+                <div class="favorite">
+
+                    <b>FAVORITE CHARACTER //</b>
+                    Viktor
+
+                    <br><br>
+
+                    I love his perspective, the way he views the
+                    world, his philosophies, and the way he grows
+                    throughout the show.
+
+                </div>
+
+
+                <div class="thought">
+
+                    <b>PERSONAL LOG //</b>
+
+                    <br><br>
+
+                    Honestly just one word:
+                    <strong>phenomenal.</strong>
+
+                </div>
+
+
+                <div class="ratings">
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            STORY
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="100">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            100
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            CHARACTERS
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="98">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            98
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            LORE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="99">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            99
+                        </span>
+
+                    </div>
+
+
+                    <div class="rating">
+
+                        <span class="rating-name">
+                            EMOTIONAL DAMAGE
+                        </span>
+
+                        <div class="bar">
+                            <div
+                                class="bar-fill"
+                                data-score="98">
+                            </div>
+                        </div>
+
+                        <span class="rating-number">
+                            98
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="show-extra">
+
+                    <div class="extra-box">
+
+                        <span>
+                            FAVORITE MOMENT
+                        </span>
+
+                        <strong>
+                            Jinx & Isha.
+                        </strong>
+
+                    </div>
+
+
+                    <div class="extra-box">
+
+                        <span>
+                            REWATCH
+                        </span>
+
+                        <strong>
+                            OF COURSE
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer class="footer">
+
+        SPEC // MEDIA ARCHIVE //
+        STORIES THAT STAY
+
+    </footer>
+
+</main>
+
+
+<script>
+
+/* =========================================
+   ANIMATED RATING BARS
+========================================= */
+
+const bars = document.querySelectorAll(".bar-fill");
+
+const observer = new IntersectionObserver(
+
+    (entries) => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                const bar = entry.target;
+                const score = bar.dataset.score;
+
+                setTimeout(() => {
+
+                    bar.style.width = score + "%";
+
+                }, 150);
+
+                observer.unobserve(bar);
+            }
+
+        });
+
+    },
+
+    {
+        threshold: 0.45
+    }
+
+);
+
+bars.forEach(bar => {
+    observer.observe(bar);
+});
+
+
+/* =========================================
+   BILLBOARD HOVER LIGHTING
+========================================= */
+
+const billboards =
+    document.querySelectorAll(".billboard");
+
+billboards.forEach(board => {
+
+    board.addEventListener(
+        "mouseenter",
+        () => {
+
+            board.style.filter =
+                "brightness(1.08) saturate(1.1)";
+
+        }
+    );
+
+    board.addEventListener(
+        "mouseleave",
+        () => {
+
+            board.style.filter = "";
+
+        }
+    );
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Personal Site</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    font-family: 'Courier New', monospace;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  h1 {
+    color: #ffffff;
+    text-shadow: 0 0 10px #b266ff, 0 0 25px #b266ff;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+  }
+
+  .search-wrap {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .search-bar-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  #searchInput {
+    flex: 1;
+    padding: 14px 18px;
+    background: #1a001f;
+    border: 2px solid #b266ff;
+    box-shadow: 0 0 12px #b266ff;
+    border-radius: 8px;
+    color: #e0d4ff;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  #searchInput::placeholder {
+    color: #8a6ba8;
+  }
+
+  #searchBtn {
+    padding: 14px 22px;
+    background: none;
+    border: 2px solid #7fffd4;
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  #searchBtn:hover {
+    background: #7fffd4;
+    color: #0a0a0a;
+  }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #1a001f;
+    border: 2px solid #b266ff;
+    box-shadow: 0 0 15px #b266ff;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .dropdown.show { display: block; }
+
+  .dropdown-item {
+    padding: 12px 18px;
+    color: #d9b3ff;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(178,102,255,0.2);
+    transition: background 0.2s ease;
+  }
+
+  .dropdown-item:last-child { border-bottom: none; }
+
+  .dropdown-item:hover {
+    background: rgba(178,102,255,0.2);
+    color: #ffffff;
+  }
+
+  .back-link {
+    margin-top: 40px;
+    color: #b266ff;
+    text-shadow: 0 0 6px #b266ff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+
+  .back-link:hover {
+    text-shadow: 0 0 12px #b266ff;
+  }
+</style>
+</head>
+<body>
+
+  <h1>FIND ME ELSEWHERE</h1>
+
+  <div class="search-wrap">
+    <div class="search-bar-row">
+      <input type="text" id="searchInput" placeholder="search..." onclick="toggleDropdown()" readonly>
+      <button id="searchBtn" onclick="goToSelected()">SEARCH</button>
+    </div>
+    <div class="dropdown" id="dropdown">
+      <div class="dropdown-item" onclick="selectItem('Discord', 'https://discord.com/users/708211747496132721')">Discord</div>
+      <div class="dropdown-item" onclick="selectItem('Instagram', 'https://www.instagram.com/saan.nvv?stkn=MXEydG44Z2Rudnp4dQ%3D%3D&utm_source=qr')">Instagram</div>
+      <div class="dropdown-item" onclick="selectItem('LinkedIn', 'https://www.linkedin.com/in/saanvi-agarwal-4b217735a/')">LinkedIn</div>
+      <div class="dropdown-item" onclick="selectItem('Pinterest', 'https://pin.it/2koJdNTgN')">Pinterest</div>
+      <div class="dropdown-item" onclick="selectItem('GitHub', 'https://github.com/saanviiagarwall')">GitHub</div>
+    </div>
+  </div>
+
+  <a href="PC.html" class="back-link">← back to system</a>
+
+<script>
+  let selectedUrl = '';
+
+  function toggleDropdown() {
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  function selectItem(name, url) {
+    document.getElementById('searchInput').value = name;
+    selectedUrl = url;
+    document.getElementById('dropdown').classList.remove('show');
+  }
+
+  function goToSelected() {
+    if (selectedUrl) {
+      window.open(selectedUrl, '_blank');
+    }
+  }
+
+  // close dropdown if clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrap')) {
+      document.getElementById('dropdown').classList.remove('show');
+    }
+  });
+</script>
+
+</body>
+</html>

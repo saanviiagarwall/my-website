@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <title> My Personal Site </title>
+    <style>
+        body{
+            margin: 0;
+            background:
+               linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                url('https://i.pinimg.com/736x/db/a0/ae/dba0ae41492a34a14b72e8cc0c662c78.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color:#9be7ff;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+        .gif-box{
+            width: 96%;
+            max-width: 1000px;
+            margin: 60px auto 20px;
+            border: 3px solid #BF77F6;
+            box-shadow: 0 0 15px #BF77F6;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 280px;
+        }
+        .gif-box img{
+            width:100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .marquee-container{
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            margin-top 20px;
+        }
+        .marquee-text{
+            display: inline-block;
+            font-size: 2.2rem;
+            color: #BF77F6;
+            text-shadow: 0 0 5px #BF77F6, 0 0 15px #BF77F6, 0 0 30px #BF77F6;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            animation: scroll 15s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-25%); }
+        }
+        .info-section{
+            padding: 40px 20px;
+            margin-top: 20px;
+        }
+        .info-box{
+            width: 90%;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            border: 2px solid #d9b3ff;
+            box-shadow: 0 0 10px #d9b3ff, 0 0 20px #d9b3ff;
+            border-radius: 4px;
+            padding: 35px;
+            background: #0a0a0a;
+            text-align: left;
+            color: #f0e6ff;
+            text-shadow: 0 0 5px #d9b3ff;
+            font-family: 'Courier New', monospace;
+        }
+        .info-box h2{
+            color: #ffffff;
+            text-shadow: 0 0 8px #d9b3ff, 0 0 15px #d9b3ff;
+            border-bottom: 1px solid #d9b3ff;
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+        .info-table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .info-table td {
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(217, 179, 255, 0.3);
+            font-size: 1rem;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 40%;
+            color: #d9b3ff;
+        }
+        .enter-section{
+            text-align: center;
+            padding: 60px 20px 100px;
+        }
+        .neon-button{
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            color: #d9b3ff;
+            background: transparent;
+            border: 2px solid #d9b3ff;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .neon-button:hover {
+            background: #d9b3ff;
+            color: #0e0e11;
+            box-shadow: 0 0 10px #d9b3ff, 0 0 40px #d9b3ff;
+        }
+ </style>
+</head>
+<body>
+    <div class="gif-box">
+        <img src="https://i.pinimg.com/originals/74/a2/c1/74a2c131ffced1b40dc37e433e5cb764.gif" alt="edgerunners">
+    </div>
+    <div class="marquee-container">
+        <span class="marquee-text"> WELCOME TO MY SYSTEM • WELCOME TO MY SYSTEM • WELCOME TO MY SYSTEM • WELCOME TO MY SYSTEM •</span>
+    </div>
+    <div class="info-section">
+        <div class="info-box">
+            <h2>ABOUT ME</h2>
+            <table class="info-table">
+                <tr>
+                    <td>NAME:</td>
+                    <td>SAANVI AGARWAL</td>
+                </tr>
+                <tr>
+                    <td>AGE:</td>
+                    <td>18</td>
+                </tr>
+                <tr>
+                    <td>GENDER:</td>
+                    <td>FEMALE</td>
+                </tr>
+                <tr>
+                    <td>BIRTHDAY:</td>
+                    <td>16 OCTOBER</td>
+                </tr>
+                
+            </table>
+        </div>
+        <div class="info-box">
+            <h2>HOBBIES</h2>
+            <table class="info-table">
+                <tr>
+                    <td>PHYSICAL INTERESTS:</td>
+                    <td>BASKETBALL, SWIMMING, GYM</td>
+                </tr>
+                <tr>
+                    <td>CREATIVE INTERESTS:</td>
+                    <td>PAINTING, WRITING, CRAFTING</td>
+                </tr>
+                <tr>
+                    <td>INTELLECTUAL INTERESTS:</td>
+                    <td>READING, DEBATING, CODING, LEARNING NEW LANGUAGES</td>
+                </tr>
+                <tr>
+                    <td>ENTERTAINMENT:</td>
+                    <td>WATCHING MOVIES, LISTENING TO MUSIC, GAMING</td>
+                </tr>
+                <tr>
+                    <td>LIFESTYLE HOBBIES:</td>
+                    <td>FASHION, TRAVELLING</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="enter-section">
+        <a href="PC.html" class="neon-button">PRESS TO ENTER</a>
+    </div>
+</body>
+</html>

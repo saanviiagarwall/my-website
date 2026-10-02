@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Personal Site</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .monitor {
+    width: 92%;
+    max-width: 900px;
+    background: #2b2b2b;
+    border-radius: 30px;
+    padding: 25px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 10px #000;
+    border: 4px solid #444;
+  }
+
+  .screen {
+    background: #000;
+    border-radius: 15px;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  .screen.on {
+    background: #2e0033;
+    box-shadow: inset 0 0 80px #b266ff;
+  }
+
+  .turn-on-btn {
+    color: #b266ff;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px #b266ff, 0 0 25px #b266ff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .screen-content {
+    display: none;
+    width: 100%;
+    height: 500px;
+    position: relative;
+    padding: 20px;
+  }
+
+  .screen-content.show {
+    display: block;
+  }
+
+  /* datetime top right */
+  .datetime-display {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-align: right;
+  }
+
+  /* animated welcome text */
+  .welcome-text {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Brush Script MT', cursive;
+    font-size: 2.2rem;
+    color: #e0d4ff;
+    text-shadow: 0 0 10px #b266ff, 0 0 20px #b266ff;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #e0d4ff;
+    width: 0;
+  }
+
+  /* folders on left */
+  .folder-list {
+    position: absolute;
+    top: 60px;
+    left: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .folder-item {
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    width: 70px;
+  }
+
+  .folder-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px #7fffd4);
+    transition: transform 0.2s ease;
+  }
+
+  .folder-item:hover .folder-icon {
+    animation: shake 0.3s ease infinite;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-2px, 1px) rotate(-3deg); }
+    50% { transform: translate(2px, -1px) rotate(3deg); }
+    75% { transform: translate(-2px, -1px) rotate(-2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  .folder-label {
+    color: #d9fff0;
+    text-shadow: 0 0 6px #7fffd4;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* taskbar */
+  .taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    background: rgba(0,0,0,0.5);
+    border-top: 1px solid #7fffd4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+  }
+
+  .shutdown-btn {
+    background: none;
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    text-shadow: 0 0 6px #ff6b6b;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .chat-btn, .time-btn {
+    background: none;
+    border: 1px solid #7fffd4;
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* calendar popup */
+  .calendar-popup {
+    display: none;
+    position: absolute;
+    bottom: 55px;
+    right: 15px;
+    background: #1a001f;
+    border: 1px solid #7fffd4;
+    box-shadow: 0 0 15px #7fffd4;
+    border-radius: 6px;
+    padding: 20px;
+    color: #d9fff0;
+    text-align: center;
+    width: 200px;
+  }
+
+  .calendar-popup.show { display: block; }
+
+  .calendar-month {
+    font-size: 1.1rem;
+    color: #b266ff;
+    text-shadow: 0 0 6px #b266ff;
+    margin-bottom: 10px;
+  }
+
+  .calendar-date {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .calendar-time {
+    font-size: 1rem;
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+  }
+
+  /* chat popup */
+  .chat-popup {
+    display: none;
+    position: absolute;
+    bottom: 55px;
+    right: 190px;
+    background: #1a001f;
+    border: 1px solid #7fffd4;
+    box-shadow: 0 0 15px #7fffd4;
+    border-radius: 6px;
+    padding: 15px;
+    width: 220px;
+    min-height: 120px;
+    color: #d9fff0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .chat-popup.show { display: block; }
+
+  .chat-popup a {
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+  }
+</style>
+</head>
+<body>
+
+<div class="monitor">
+  <div class="screen" id="screen">
+    <button class="turn-on-btn" id="turnOnBtn" onclick="turnOn()">TURN ON</button>
+
+    <div class="screen-content" id="screenContent">
+
+      <div class="datetime-display" id="datetimeDisplay"></div>
+
+      <div class="welcome-text" id="welcomeText"></div>
+
+      <div class="folder-list">
+        <a href="music.html" class="folder-item">
+          <div class="folder-icon">🎵</div>
+          <div class="folder-label">MUSIC</div>
+        </a>
+        <a href="gaming.html" class="folder-item">
+          <div class="folder-icon">🎮</div>
+          <div class="folder-label">GAMING</div>
+        </a>
+        <a href="notes.html" class="folder-item">
+          <div class="folder-icon">📝</div>
+          <div class="folder-label">NOTES</div>
+        </a>
+        <a href="media.html" class="folder-item">
+          <div class="folder-icon">📁</div>
+          <div class="folder-label">MEDIA</div>
+        </a>
+      </div>
+
+      <div class="taskbar">
+        <button class="shutdown-btn" onclick="shutDown()">⏻ SHUTDOWN</button>
+        <div class="taskbar-right">
+          <button class="chat-btn" onclick="toggleChat()">💬</button>
+          <button class="time-btn" id="timeBtn" onclick="toggleCalendar()">--:--</button>
+        </div>
+      </div>
+
+      <div class="calendar-popup" id="calendarPopup">
+        <div class="calendar-month" id="calendarMonth"></div>
+        <div class="calendar-date" id="calendarDate"></div>
+        <div class="calendar-time" id="calendarTime"></div>
+      </div>
+
+      <div class="chat-popup" id="chatPopup">
+        <div id="chatMessages"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<audio id="bgMusic" src="cyberpunk.mp3" loop></audio>
+<audio id="powerSound" src="power-on.mp3"></audio>
+
+<script>
+  let clockInterval;
+  let chatStarted = false;
+
+  function turnOn() {
+    document.getElementById('screen').classList.add('on');
+    document.getElementById('turnOnBtn').style.display = 'none';
+    document.getElementById('screenContent').classList.add('show');
+
+    document.getElementById('powerSound').play().catch(()=>{});
+    document.getElementById('bgMusic').play().catch(()=>{});
+
+    typeWelcome();
+    startClock();
+  }
+
+  function shutDown() {
+    document.getElementById('screen').classList.remove('on');
+    document.getElementById('turnOnBtn').style.display = 'inline-block';
+    document.getElementById('screenContent').classList.remove('show');
+    document.getElementById('calendarPopup').classList.remove('show');
+    document.getElementById('chatPopup').classList.remove('show');
+
+    const music = document.getElementById('bgMusic');
+    music.pause();
+    music.currentTime = 0;
+
+    document.getElementById('welcomeText').textContent = '';
+    document.getElementById('welcomeText').style.width = '0';
+    clearInterval(clockInterval);
+  }
+
+  function typeWelcome() {
+    const text = "Welcome to my system";
+    const el = document.getElementById('welcomeText');
+    el.textContent = '';
+    el.style.width = 'auto';
+    let i = 0;
+    const typer = setInterval(() => {
+      el.textContent += text[i];
+      i++;
+      if (i >= text.length) clearInterval(typer);
+    }, 100);
+  }
+
+  function startClock() {
+    updateClock();
+    clockInterval = setInterval(updateClock, 1000);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const dateStr = now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
+    const monthStr = now.toLocaleDateString([], {month:'long', year:'numeric'});
+    const dayNum = now.getDate();
+
+    document.getElementById('datetimeDisplay').innerHTML = dateStr + '<br>' + timeStr;
+    document.getElementById('timeBtn').textContent = timeStr;
+    document.getElementById('calendarMonth').textContent = monthStr;
+    document.getElementById('calendarDate').textContent = dayNum;
+    document.getElementById('calendarTime').textContent = timeStr;
+  }
+
+  function toggleCalendar() {
+    document.getElementById('chatPopup').classList.remove('show');
+    document.getElementById('calendarPopup').classList.toggle('show');
+  }
+
+  function toggleChat() {
+    document.getElementById('calendarPopup').classList.remove('show');
+    const popup = document.getElementById('chatPopup');
+    popup.classList.toggle('show');
+
+    if (popup.classList.contains('show') && !chatStarted) {
+      chatStarted = true;
+      const msgBox = document.getElementById('chatMessages');
+      msgBox.innerHTML = '';
+
+      const messages = [
+        "hello who are you?",
+        "...",
+        "I don't speak silence! If u wish to speak in that language go talk to <a href='socials.html'>saanvi</a>!"
+      ];
+
+      messages.forEach((msg, index) => {
+        setTimeout(() => {
+          const p = document.createElement('p');
+          p.innerHTML = msg;
+          p.style.margin = '6px 0';
+          msgBox.appendChild(p);
+        }, index * 900);
+      });
+    }
+  }
+</script>
+
+</body>
+</html>

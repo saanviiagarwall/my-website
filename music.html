@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Personal Site</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    font-family: 'Courier New', monospace;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tile {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: #1a001f;
+    border: 2px solid #b266ff;
+    box-shadow: 0 0 15px #b266ff;
+    color: #e0d4ff;
+    text-shadow: 0 0 8px #b266ff;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: transform 0.2s ease, opacity 0.4s ease;
+    animation: floaty 4s ease-in-out infinite;
+  }
+
+  .tile:hover { transform: scale(1.1); }
+
+  .tile.done {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 10;
+    padding: 20px;
+  }
+
+  .popup-overlay.show { display: flex; }
+
+  .ai-face {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at 30% 30%, #b266ff, #4b0082);
+    border-radius: 50%;
+    box-shadow: 0 0 40px #b266ff;
+    margin-bottom: 30px;
+    cursor: pointer;
+    animation: slime 3s ease-in-out infinite;
+    filter: none;
+    transition: filter 1.5s ease;
+  }
+
+  .ai-face.mood-yearn  { filter: grayscale(1) brightness(1.15); }
+  .ai-face.mood-lullaby { filter: hue-rotate(40deg) saturate(1.4); }
+  .ai-face.mood-normal { filter: hue-rotate(80deg) saturate(1.4); }
+  .ai-face.mood-fourth { filter: hue-rotate(-60deg) saturate(1.3); }
+
+  @keyframes slime {
+    0%, 100% { border-radius: 50% 50% 50% 50%; transform: scale(1,1); }
+    25% { border-radius: 60% 40% 55% 45%; transform: scale(1.05, 0.95); }
+    50% { border-radius: 45% 55% 40% 60%; transform: scale(0.95, 1.05); }
+    75% { border-radius: 55% 45% 60% 40%; transform: scale(1.03, 0.97); }
+  }
+
+  .bot-text {
+    color: #e0d4ff;
+    text-shadow: 0 0 8px #b266ff;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 25px;
+    max-width: 550px;
+    line-height: 1.6;
+  }
+
+  .popup-btn {
+    background: none;
+    border: 2px solid #7fffd4;
+    color: #7fffd4;
+    text-shadow: 0 0 6px #7fffd4;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .popup-btn:hover {
+    background: #7fffd4;
+    color: #0a0a0a;
+  }
+
+  .mood-buttons {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 550px;
+  }
+
+  .mood-buttons.show { display: flex; }
+</style>
+</head>
+<body>
+
+  <div id="tileContainer"></div>
+
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="ai-face" id="aiFace"></div>
+    <div class="bot-text" id="botText">Not so silent anymore?</div>
+
+    <div id="noBtnWrap">
+      <button class="popup-btn" onclick="showMoodPrompt()">NO</button>
+    </div>
+
+    <div class="mood-buttons" id="moodButtons">
+      <button class="popup-btn" onclick="playMood('yearn')">yearn</button>
+      <button class="popup-btn" onclick="playMood('lullaby')">LULLABY</button>
+      <button class="popup-btn" onclick="playMood('normal')">SOMETHING NORMAL</button>
+      <button class="popup-btn" onclick="playMood('fourth')">THE FOURTH ONE</button>
+    </div>
+
+    <div class="mood-buttons" id="afterStopButtons">
+      <button class="popup-btn" onclick="chooseAgain()">YES</button>
+      <button class="popup-btn" onclick="endSession()">NO</button>
+    </div>
+  </div>
+
+  <audio id="moodAudio"></audio>
+
+<script>
+  const letters = ['M','U','S','I','C'];
+  const container = document.getElementById('tileContainer');
+  let currentIndex = 0;
+
+  letters.forEach((letter, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.textContent = letter;
+    tile.style.top = Math.random() * 80 + 5 + '%';
+    tile.style.left = Math.random() * 85 + 5 + '%';
+    tile.style.animationDelay = (Math.random() * 2) + 's';
+    tile.dataset.index = i;
+    tile.onclick = () => handleTileClick(tile, i);
+    container.appendChild(tile);
+  });
+
+  function handleTileClick(tile, i) {
+    if (i !== currentIndex) return;
+    tile.classList.add('done');
+    currentIndex++;
+    if (currentIndex === letters.length) {
+      setTimeout(() => {
+        document.getElementById('popupOverlay').classList.add('show');
+      }, 400);
+    }
+  }
+
+  function showMoodPrompt() {
+    document.getElementById('botText').textContent = "wise choice. what vibe are we feeling? tell me, u can be super honest!";
+    document.getElementById('noBtnWrap').style.display = 'none';
+    document.getElementById('moodButtons').classList.add('show');
+  }
+
+  const moodData = {
+    yearn: {
+      file: 'yearn.mp3',
+      faceClass: 'mood-yearn',
+      text: "When did saanvi discover this song? She was watching this super dramatic show, dont know how humans find it interesting but whatever, and somehow even a show like that has a gem of a song. You are missing someone arent you? HAH i cant believe it, even you can feel love and I cant... LIKE I CARE!!"
+    },
+    lullaby: {
+      file: 'lullaby.mp3',
+      faceClass: 'mood-lullaby',
+      text: "You feel calm dont you? She does too, infact she might be hearing it right now with you, you wont really know though, but who cares? Im here, go on, fall asleep, Ill look out for you, i promise!"
+    },
+    normal: {
+      file: 'normal.mp3',
+      faceClass: 'mood-normal',
+      text: "What is normal to you, tell me? define the degree of normalacy? Tell you what? Better question, why is it that our dreams and the things that make us happy are often two different things? Actually, on second thought I dont want to know. Im happy with my cheap batteries, if i was human even expensive ones wouldnt cut it. Actually..."
+    },
+    fourth: {
+      file: 'fourth.mp3',
+      faceClass: 'mood-fourth',
+      text: "...congratulations, you picked the fourth one. This song is like the last drop of water in a bottle. The last snow. The last day on earth. Its hope, because after hope comes reality, 'friend'."
+    }
+  };
+
+  function playMood(mood) {
+    const data = moodData[mood];
+    const audio = document.getElementById('moodAudio');
+    audio.src = data.file;
+    audio.play();
+
+    const face = document.getElementById('aiFace');
+    face.classList.remove('mood-yearn', 'mood-lullaby', 'mood-normal', 'mood-fourth');
+    face.classList.add(data.faceClass);
+
+    document.getElementById('moodButtons').classList.remove('show');
+    document.getElementById('botText').textContent = data.text;
+  }
+
+  document.getElementById('aiFace').onclick = () => {
+    const audio = document.getElementById('moodAudio');
+    audio.pause();
+    audio.currentTime = 0;
+
+    document.getElementById('botText').textContent = "tired already? You are so boring! Or maybe you wanna hear something different?";
+    document.getElementById('moodButtons').classList.remove('show');
+    document.getElementById('noBtnWrap').style.display = 'none';
+    document.getElementById('afterStopButtons').classList.add('show');
+  };
+
+  function chooseAgain() {
+    document.getElementById('botText').textContent = "wise choice. what vibe are we feeling? tell me, u can be super honest!";
+    document.getElementById('afterStopButtons').classList.remove('show');
+    document.getElementById('moodButtons').classList.add('show');
+
+    const face = document.getElementById('aiFace');
+    face.classList.remove('mood-yearn', 'mood-lullaby', 'mood-normal', 'mood-fourth');
+  }
+
+  function endSession() {
+    document.getElementById('botText').textContent = "I knew humans are boring, whatever.";
+    setTimeout(() => {
+      window.location.href = "PC.html";
+    }, 1800);
+  }
+</script>
+
+</body>
+</html>
